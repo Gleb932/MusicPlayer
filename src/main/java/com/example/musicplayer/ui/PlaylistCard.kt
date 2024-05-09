@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,10 +23,11 @@ import com.example.musicplayer.R
 import com.example.musicplayer.ui.theme.MusicPlayerTheme
 
 @Composable
-fun PlaylistCard(playlist: Playlist, modifier: Modifier = Modifier) {
-    val cover: ImageBitmap? = playlist.songList.lastOrNull()?.album?.cover
+fun PlaylistCard(playlist: Playlist, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val cover = playlist.songList.lastOrNull()?.album?.cover
     Card(
         shape = RoundedCornerShape(12.dp),
+        onClick = onClick,
         modifier = Modifier
             .then(modifier))
     {
@@ -65,7 +65,7 @@ fun PlaylistCard(playlist: Playlist, modifier: Modifier = Modifier) {
 fun PlaylistCardPreview() {
     MusicPlayerTheme {
         LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 128.dp)) {
-            items(1){PlaylistCard(Playlist("Test card", mutableListOf()))}
+            items(1){PlaylistCard(Playlist("Test card", listOf()), {})}
         }
     }
 }

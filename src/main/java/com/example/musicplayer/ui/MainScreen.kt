@@ -18,7 +18,7 @@ import com.example.musicplayer.Playlist
 import com.example.musicplayer.ui.theme.MusicPlayerTheme
 
 @Composable
-fun MainScreen(playlists: MutableList<Playlist>, modifier: Modifier = Modifier) {
+fun MainScreen(playlists: List<Playlist>, modifier: Modifier = Modifier) {
     Scaffold(
         modifier = modifier,
         topBar = { TopBar() }
@@ -30,7 +30,12 @@ fun MainScreen(playlists: MutableList<Playlist>, modifier: Modifier = Modifier) 
         ){
             LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 128.dp))
             {
-                items(playlists){ playlist -> PlaylistCard(playlist, Modifier.padding(5.dp)) }
+                items(playlists){
+                    playlist -> PlaylistCard(
+                    playlist,
+                    {},
+                    Modifier.padding(5.dp))
+                }
             }
         }
     }
@@ -45,7 +50,7 @@ fun MainScreen(playlists: MutableList<Playlist>, modifier: Modifier = Modifier) 
 @Composable
 fun MainScreenPreview() {
     MusicPlayerTheme {
-        MainScreen(((1..20).map { it -> Playlist("Test $it", mutableListOf())}).toMutableList(), Modifier.background(
+        MainScreen(((1..20).map { it -> Playlist("Test $it", listOf())}).toMutableList(), Modifier.background(
             MaterialTheme.colorScheme.primary
         ))
     }
