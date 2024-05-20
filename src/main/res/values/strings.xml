@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">MusicPlayer</string>
+
+    <string name="playlists_title">Playlists</string>
+    <string name="settings_title">Settings</string>
+    <string name="folder_settings_title">Folder settings</string>
+
+    <string name="playlists_nav">go to playlists</string>
+    <string name="settings_nav">go to settings</string>
+
+    <string name="back">go back</string>
+    <string name="proceed">proceed</string>
+    <string name="delete">delete</string>
+    <string name="actions">actions</string>
+    <string name="add_folder_to_scan">Add folder to scan</string>
+
+    <string name="playlist_cover">playlist cover</string>
+    <string name="song_cover">song cover</string>
+    <string name="music_folders">Music folders</string>
+    <string name="unknown_artist">Unknown artist</string>
 </resources>

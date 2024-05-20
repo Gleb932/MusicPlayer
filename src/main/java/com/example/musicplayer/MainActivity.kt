@@ -3,22 +3,20 @@ package com.example.musicplayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.musicplayer.ui.MainScreen
+import androidx.activity.viewModels
+import com.example.musicplayer.ui.NavigationRoot
 import com.example.musicplayer.ui.theme.MusicPlayerTheme
+import com.example.musicplayer.ui.viewmodels.SettingsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val settingsViewModel: SettingsViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val playlists = (1..20).map {Playlist("Test $it", listOf())}
         setContent {
             MusicPlayerTheme {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "home") {
-                    composable("home") { MainScreen(playlists.toMutableList()) }
-                }
+                NavigationRoot()
             }
         }
     }

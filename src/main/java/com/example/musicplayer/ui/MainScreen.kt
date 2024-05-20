@@ -1,41 +1,41 @@
 package com.example.musicplayer.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.musicplayer.Playlist
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.musicplayer.ui.theme.MusicPlayerTheme
+import com.example.musicplayer.ui.viewmodels.MainScreenViewModel
 
 @Composable
-fun MainScreen(playlists: List<Playlist>, modifier: Modifier = Modifier) {
+fun MainScreen(navController: NavController, modifier: Modifier = Modifier, mainScreenViewModel: MainScreenViewModel = viewModel()) {
     Scaffold(
         modifier = modifier,
-        topBar = { TopBar() }
+        topBar = { TopBar() },
+        bottomBar = { BottomBar(navController = navController) }
     ){
-        Surface(
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 128.dp),
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize()
-        ){
-            LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 128.dp))
-            {
-                items(playlists){
-                    playlist -> PlaylistCard(
+            .fillMaxSize())
+        {
+            items(items = mainScreenViewModel.playlists.value) { playlist ->
+                PlaylistCard(
                     playlist,
                     {},
-                    Modifier.padding(5.dp))
-                }
+                    Modifier.padding(5.dp)
+                )
             }
         }
     }
@@ -50,8 +50,6 @@ fun MainScreen(playlists: List<Playlist>, modifier: Modifier = Modifier) {
 @Composable
 fun MainScreenPreview() {
     MusicPlayerTheme {
-        MainScreen(((1..20).map { it -> Playlist("Test $it", listOf())}).toMutableList(), Modifier.background(
-            MaterialTheme.colorScheme.primary
-        ))
+        MainScreen(rememberNavController())
     }
 }

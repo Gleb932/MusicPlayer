@@ -23,8 +23,8 @@ fun PlaylistScreen(playlist: Playlist) {
 fun PlaylistScreenPreview() {
     MusicPlayerTheme {
         PlaylistScreen(playlist = Playlist("Test", listOf(
-            Song(0, "test1", listOf("Test artist", "test 3")),
-            Song(0, "test2", listOf("Test artist 2", "test 3"))
+            Song("test1", listOf("Test artist", "test 3")),
+            Song("test2", listOf("Test artist 2", "test 3"))
         )
         ))
     }
