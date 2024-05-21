@@ -1,5 +1,6 @@
 package com.example.musicplayer.ui
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -32,10 +34,12 @@ import androidx.navigation.NavController
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.viewmodels.SettingsViewModel
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderSettings(navController: NavController, viewModel: SettingsViewModel = hiltViewModel())
 {
+    val folders by viewModel.folders.collectAsStateWithLifecycle(initialValue = setOf())
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
         if (it != null) {
             viewModel.addFolder(it.toString())
@@ -61,9 +65,8 @@ fun FolderSettings(navController: NavController, viewModel: SettingsViewModel = 
             ) {
                 Text(text = stringResource(id = R.string.add_folder_to_scan))
             }
-            val folders = viewModel.folders.collectAsStateWithLifecycle(initialValue = setOf())
             LazyColumn {
-                items(folders.value.toList()) { folderUri ->
+                items(folders.toList()) { folderUri ->
                     FolderItem(
                         folderUri,
                         {
