@@ -24,7 +24,7 @@ import com.example.musicplayer.ui.theme.MusicPlayerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar()
+fun TopSearchBar(title: String, onSearch: (String) -> Unit)
 {
     var searchActive by rememberSaveable {
         mutableStateOf(false)
@@ -40,7 +40,11 @@ fun TopBar()
             active = true,
             onActiveChange = {},
             placeholder = { Text(text = "Search") },
-            leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
+            leadingIcon = {
+                IconButton(onClick = {onSearch(searchText)}) {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                }
+            },
             trailingIcon =
             {
                 IconButton(onClick = {
@@ -60,7 +64,7 @@ fun TopBar()
     } else {
         TopAppBar(
             title = {
-                Text("Playlists")
+                Text(title)
             },
             actions = {
                 IconButton(onClick = { searchActive = true } ) {
@@ -84,6 +88,6 @@ fun TopBar()
 fun TopBarPreview()
 {
     MusicPlayerTheme {
-        TopBar()
+        TopSearchBar("Playlists", {})
     }
 }
