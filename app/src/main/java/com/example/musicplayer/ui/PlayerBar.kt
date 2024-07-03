@@ -1,5 +1,6 @@
 package com.example.musicplayer.ui
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,54 +16,41 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.Player
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.musicplayer.R
-import com.example.musicplayer.ui.states.SongItemUiState
+import com.example.musicplayer.ui.states.PlayerBarUiState
+import com.example.musicplayer.ui.viewmodels.PlayerBarViewModel
 
 @Composable
 fun PlayerBar(
     navController: NavController,
-    songItemUiState: SongItemUiState,
-    onPlay: () -> Unit, onPause: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    playerBarViewModel: PlayerBarViewModel = hiltViewModel()
 ) {
-    var isPlaying by remember { mutableStateOf(true) }
-    val playerListener = remember {
-        object : Player.Listener{
-            override fun onIsPlayingChanged(isPlayingNew: Boolean) {
-                super.onIsPlayingChanged(isPlayingNew)
-                isPlaying = isPlayingNew
-            }
-        }
-    }
-    DisposableEffect(Unit) {
-        PlayerState.mediaController?.addListener(playerListener)
-        onDispose {
-            PlayerState.mediaController?.removeListener(playerListener)
-        }
-    }
+    val playerBarUiState by playerBarViewModel.state.collectAsStateWithLifecycle(initialValue = PlayerBarUiState())
+    if (playerBarUiState.mediaItem == null) return
     Row(
         modifier = Modifier
             .clickable { navController.navigate("player") }
             .background(MaterialTheme.colorScheme.secondaryContainer)
             .then(modifier)
     ){
-        if(songItemUiState.cover != null)
+        val metadata = playerBarUiState.mediaItem?.mediaMetadata
+        val art = metadata?.artworkData
+        if(art?.isNotEmpty() == true)
         {
             Image(
-                songItemUiState.cover,
+                BitmapFactory.decodeByteArray(art, 0, art.size).asImageBitmap(),
                 contentDescription = stringResource(id = R.string.song_cover),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -74,10 +62,10 @@ fun PlayerBar(
             .weight(1F)
             .padding(horizontal = 10.dp)
         ) {
-            Text(songItemUiState.song.title, color = MaterialTheme.colorScheme.onSecondaryContainer)
+            Text(metadata?.title.toString(), color = MaterialTheme.colorScheme.onSecondaryContainer)
             Text(
-                if(songItemUiState.artists.isNotEmpty())
-                    songItemUiState.artists.joinToString { it.name }
+                if(metadata?.artist != null)
+                    metadata.artist.toString()
                 else
                     stringResource(id = R.string.unknown_artist),
                 fontWeight = FontWeight.Light,
@@ -85,11 +73,11 @@ fun PlayerBar(
             )
         }
         IconButton(
-            onClick = if(isPlaying) onPause else onPlay,
+            onClick = playerBarViewModel::onPlayButtonClick,
             modifier = Modifier.align(Alignment.CenterVertically)
         ) {
             Icon(
-                imageVector = if(isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                imageVector = if(playerBarUiState.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 contentDescription = stringResource(id = R.string.play),
                 modifier = Modifier.size(128.dp))
         }

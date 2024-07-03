@@ -3,12 +3,10 @@ package com.example.musicplayer.ui.viewmodels
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import com.example.musicplayer.domain.usecases.GetLocalSongsUseCase
 import com.example.musicplayer.domain.usecases.GetSongCoverUseCase
 import com.example.musicplayer.domain.usecases.GetSongMainArtistsUseCase
-import com.example.musicplayer.ui.PlayerState
+import com.example.musicplayer.ui.PlayerHolder
 import com.example.musicplayer.ui.states.SongItemUiState
 import com.example.musicplayer.ui.states.SongsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,10 +43,7 @@ class LocalMusicScreenViewModel @Inject constructor(
     }
 
     fun select(songItem: SongItemUiState){
-        val player: Player = PlayerState.mediaController ?: return
-        songItem.song.sourceUri?.let { player.setMediaItem(MediaItem.fromUri(it)) } ?: return
-        player.prepare()
-        player.play()
-        PlayerState.select(songItem)
+        PlayerHolder.select(songItem, songListUiState.value.songs)
+        PlayerHolder.play()
     }
 }

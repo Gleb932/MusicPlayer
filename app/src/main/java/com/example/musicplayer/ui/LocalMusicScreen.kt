@@ -10,14 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.musicplayer.R
-import com.example.musicplayer.ui.states.SongItemUiState
 import com.example.musicplayer.ui.viewmodels.LocalMusicScreenViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -52,17 +50,7 @@ fun LocalMusicScreen(
         bottomBar =
         {
             Column {
-                val currentSong: SongItemUiState? by remember {
-                    PlayerState.currentSong
-                }
-                if(currentSong != null) {
-                    PlayerBar(
-                        navController = navController,
-                        songItemUiState = currentSong!!,
-                        onPlay = PlayerState::play,
-                        onPause = PlayerState::pause,
-                    )
-                }
+                PlayerBar(navController = navController)
                 BottomBar(navController = navController)
             }
         },
@@ -80,7 +68,10 @@ fun LocalMusicScreen(
         }
         SongList(
             uiState = songListUiState,
-            play = localMusicScreenViewModel::select,
+            play =
+            {
+                localMusicScreenViewModel.select(it)
+            },
             modifier = Modifier.padding(it)
         )
     }
