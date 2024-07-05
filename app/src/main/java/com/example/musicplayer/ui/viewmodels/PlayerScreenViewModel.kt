@@ -8,6 +8,7 @@ import com.example.musicplayer.domain.usecases.GetSongCoverUseCase
 import com.example.musicplayer.ui.PlayerHolder
 import com.example.musicplayer.ui.formatMillis
 import com.example.musicplayer.ui.states.PlayerScreenUiState
+import com.example.musicplayer.ui.states.PlayerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -29,24 +30,27 @@ class PlayerScreenViewModel @Inject constructor(
     private val position: MutableStateFlow<Long> = MutableStateFlow(0)
     val uiState = PlayerHolder.playerState
         .combine(position) { a, b -> Pair(a, b) }
-        .map { (state, position) ->
-            PlayerScreenUiState(
-                currentMedia = state.currentMediaItem,
-                title = state.currentMediaItem?.mediaMetadata?.title
-                    ?.let { it.toString() } ?: "",
-                artist = state.currentMediaItem?.mediaMetadata?.artist
-                    ?.let { it.toString() } ?: "Unknown artist",
-                bigCover = state.currentSong?.song?.let
-                {
-                    getSongCoverUseCase(it, Pair(1000, 1000))?.asImageBitmap()
-                },
-                isPlaying = state.isPlaying,
-                duration = formatMillis(state.duration),
-                position = formatMillis(position),
-                progress = position.toFloat() / state.duration
-        ) }
-        .stateIn(viewModelScope, SharingStarted.Lazily, PlayerScreenUiState())
+        .map { (playerState, position) -> mapState(playerState, position)}
+        .stateIn(viewModelScope, SharingStarted.Lazily, mapState(PlayerHolder.playerState.value, 0))
     private var trackingJob: Job? = null
+
+    private fun mapState(playerState: PlayerState, position: Long): PlayerScreenUiState {
+        playerState.currentSong?.bigCover  = playerState.currentSong?.bigCover ?: playerState.currentSong?.song?.let{
+            getSongCoverUseCase(it, Pair(1000, 1000))?.asImageBitmap()
+        }
+        return PlayerScreenUiState(
+            currentMedia = playerState.currentMediaItem,
+            title = playerState.currentMediaItem?.mediaMetadata?.title
+                ?.let { it.toString() } ?: "",
+            artist = playerState.currentMediaItem?.mediaMetadata?.artist
+                ?.let { it.toString() } ?: "Unknown artist",
+            bigCover = playerState.currentSong?.bigCover,
+            isPlaying = playerState.isPlaying,
+            duration = formatMillis(playerState.duration),
+            position = formatMillis(position),
+            progress = position.toFloat() / playerState.duration
+        )
+    }
 
     fun startTrackingPosition() {
         if(trackingJob != null) return

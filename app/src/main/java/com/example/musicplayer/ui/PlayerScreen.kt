@@ -21,7 +21,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import com.example.musicplayer.R
@@ -40,7 +40,7 @@ fun PlayerScreen(
     navController: NavController,
     playerScreenViewModel: PlayerScreenViewModel = hiltViewModel()
 ) {
-    val state by playerScreenViewModel.uiState.collectAsState()
+    val state by playerScreenViewModel.uiState.collectAsStateWithLifecycle()
     DisposableEffect(Unit) {
         playerScreenViewModel.startTrackingPosition()
         onDispose {

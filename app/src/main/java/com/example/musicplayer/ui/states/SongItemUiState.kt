@@ -7,5 +7,6 @@ import com.example.musicplayer.domain.Song
 data class SongItemUiState (
     val song: Song,
     val artists: List<Artist> = listOf(),
-    val cover: ImageBitmap? = null
+    val cover: ImageBitmap? = null,
+    var bigCover: ImageBitmap? = null
 )
