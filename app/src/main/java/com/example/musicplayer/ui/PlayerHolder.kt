@@ -34,18 +34,21 @@ object PlayerHolder: Player.Listener {
         return mediaItemBuilder.build()
     }
 
-    fun select(songItem: SongItemUiState, songList: List<SongItemUiState>){
-        val mediaItem = mediaItemFromSongItem(songItem) ?: return
-        select(mediaItem, songList)
+    fun loadPlaylist(songList: List<SongItemUiState>) {
+        val mediaItemList = songList.mapNotNull { mediaItemFromSongItem(it) }
+        mediaController?.addMediaItems(mediaItemList)
+        mediaController?.prepare()
+        _playerState.update { playerState ->
+            playerState.copy(
+                songList = songList,
+                mediaItems = mediaItemList
+            )
+        }
     }
 
-    private fun select(mediaItem: MediaItem, songList: List<SongItemUiState>) {
-        val mediaController = mediaController ?: return
-        _playerState.update { playerState ->
-            playerState.copy(songList = songList)
-        }
-        mediaController.setMediaItem(mediaItem)
-        mediaController.prepare()
+    fun select(songId: String) {
+        val index = playerState.value.mediaItems.indexOfFirst{ it.mediaId == songId }
+        mediaController?.seekTo(index, 0)
     }
 
     fun play() {
@@ -54,6 +57,14 @@ object PlayerHolder: Player.Listener {
 
     fun pause() {
         mediaController?.pause()
+    }
+
+    fun skipNext() {
+        mediaController?.seekToNext()
+    }
+
+    fun skipPrevious() {
+        mediaController?.seekToPrevious()
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {

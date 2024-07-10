@@ -26,6 +26,7 @@ class SongRepositoryImpl @Inject constructor(
 ): SongRepository {
     private val mediaStoreScanner = MediaStoreScanner(settingsRepository.folders, context, this::scanMediaStore)
     private val mediaMetadataRetriever = MediaMetadataRetriever()
+    private var localSongsCache: List<Song>? = null
 
     override fun getSavedSongs(): List<Song> {
         /*TODO("Implement getting of saved songs")*/
@@ -33,7 +34,9 @@ class SongRepositoryImpl @Inject constructor(
     }
 
     override fun getLocalSongs(): List<Song> {
-        return mediaStoreScanner.getLocalFiles()
+        localSongsCache = localSongsCache ?: mediaStoreScanner.getLocalFiles()
+        val localSongsCache = localSongsCache ?: mediaStoreScanner.getLocalFiles()
+        return localSongsCache
     }
 
     override fun getThumbnail(song: Song, size: Pair<Int, Int>): Bitmap? {

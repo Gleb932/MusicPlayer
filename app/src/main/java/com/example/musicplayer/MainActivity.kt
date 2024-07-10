@@ -8,6 +8,13 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.example.musicplayer.ui.NavigationRoot
@@ -51,6 +58,11 @@ class MainActivity : ComponentActivity() {
             try {
                 PlayerHolder.mediaController = controllerFuture.get()
                 PlayerHolder.mediaController!!.addListener(PlayerHolder)
+                setContent {
+                    MusicPlayerTheme {
+                        NavigationRoot()
+                    }
+                }
                 // The session accepted the connection.
             } catch (e: ExecutionException) {
                 Log.e("MediaController", "Failed to create")
@@ -58,7 +70,15 @@ class MainActivity : ComponentActivity() {
         }, MoreExecutors.directExecutor())
         setContent {
             MusicPlayerTheme {
-                NavigationRoot()
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }

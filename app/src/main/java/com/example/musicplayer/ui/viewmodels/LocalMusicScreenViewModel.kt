@@ -39,11 +39,12 @@ class LocalMusicScreenViewModel @Inject constructor(
             _songListUiState.update {
                 it.copy(songs = songs)
             }
+            PlayerHolder.loadPlaylist(songs)
         }
     }
 
     fun select(songItem: SongItemUiState){
-        PlayerHolder.select(songItem, songListUiState.value.songs)
+        PlayerHolder.select(songItem.song.id.toString())
         PlayerHolder.play()
     }
 }

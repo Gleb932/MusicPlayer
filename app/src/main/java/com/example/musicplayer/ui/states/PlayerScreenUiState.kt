@@ -12,4 +12,6 @@ data class PlayerScreenUiState (
     val position: String = "",
     val progress: Float = 0F,
     val duration: String = "",
+    val canSkipPrevious: Boolean = true,
+    val canSkipNext: Boolean = true
 )

@@ -4,26 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicplayer.ui.PlayerHolder
 import com.example.musicplayer.ui.states.PlayerBarUiState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import com.example.musicplayer.ui.states.PlayerState
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 class PlayerBarViewModel: ViewModel() {
-    private val _uiState: MutableStateFlow<PlayerBarUiState> = MutableStateFlow(PlayerBarUiState(null, false))
-    val state = _uiState.asStateFlow()
+    val state = PlayerHolder.playerState
+        .map { playerState -> mapState(playerState) }
+        .stateIn(viewModelScope, SharingStarted.Lazily, mapState(PlayerHolder.playerState.value))
 
-    init {
-        viewModelScope.launch {
-            PlayerHolder.playerState.onEach {newState ->
-                _uiState.update { it.copy(
-                    mediaItem = newState.currentMediaItem,
-                    isPlaying = newState.isPlaying
-                ) }
-            }.collect()
-        }
+    private fun mapState(playerState: PlayerState): PlayerBarUiState {
+        return PlayerBarUiState(
+            mediaItem = playerState.currentMediaItem,
+            isPlaying = playerState.isPlaying
+        )
     }
 
     fun onPlayButtonClick() {

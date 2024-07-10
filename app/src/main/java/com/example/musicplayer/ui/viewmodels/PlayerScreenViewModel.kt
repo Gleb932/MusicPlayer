@@ -48,7 +48,9 @@ class PlayerScreenViewModel @Inject constructor(
             isPlaying = playerState.isPlaying,
             duration = formatMillis(playerState.duration),
             position = formatMillis(position),
-            progress = position.toFloat() / playerState.duration
+            progress = position.toFloat() / playerState.duration,
+            canSkipPrevious = PlayerHolder.mediaController?.hasPreviousMediaItem() ?: false,
+            canSkipNext = PlayerHolder.mediaController?.hasNextMediaItem() ?: false
         )
     }
 
@@ -77,5 +79,13 @@ class PlayerScreenViewModel @Inject constructor(
 
     fun onPause() {
         PlayerHolder.pause()
+    }
+
+    fun onSkipNext() {
+        PlayerHolder.skipNext()
+    }
+
+    fun onSkipPrevious() {
+        PlayerHolder.skipPrevious()
     }
 }

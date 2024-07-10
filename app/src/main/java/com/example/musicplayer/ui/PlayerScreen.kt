@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
@@ -79,13 +81,35 @@ fun PlayerScreen(
                 Slider(state.progress, onValueChange = playerScreenViewModel::onSliderMove, modifier = Modifier.weight(1f))
                 Text(state.duration)
             }
-            IconButton(
-                onClick = if(state.isPlaying) playerScreenViewModel::onPause else playerScreenViewModel::onPlay,
-            ) {
-                Icon(
-                    imageVector = if(state.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                    contentDescription = stringResource(id = R.string.play),
-                    modifier = Modifier.size(128.dp))
+            Row()
+            {
+                IconButton(
+                    onClick = playerScreenViewModel::onSkipPrevious,
+                    enabled = state.canSkipPrevious) {
+                    Icon(
+                        imageVector = Icons.Default.SkipPrevious,
+                        contentDescription = stringResource(id = R.string.play_previous),
+                        modifier = Modifier.size(112.dp)
+                    )
+                }
+                IconButton(
+                    onClick = if (state.isPlaying) playerScreenViewModel::onPause else playerScreenViewModel::onPlay,
+                ) {
+                    Icon(
+                        imageVector = if (state.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                        contentDescription = stringResource(id = R.string.play),
+                        modifier = Modifier.size(128.dp)
+                    )
+                }
+                IconButton(
+                    onClick = playerScreenViewModel::onSkipNext,
+                    enabled = state.canSkipNext) {
+                    Icon(
+                        imageVector = Icons.Default.SkipNext,
+                        contentDescription = stringResource(id = R.string.play_next),
+                        modifier = Modifier.size(112.dp)
+                    )
+                }
             }
         }
     }

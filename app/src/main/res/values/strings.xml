@@ -18,7 +18,9 @@
     <string name="proceed">proceed</string>
     <string name="delete">delete</string>
     <string name="actions">actions</string>
+    <string name="play_previous">play previous</string>
     <string name="play">play</string>
+    <string name="play_next">play next</string>
     <string name="add_folder_to_scan">Add folder to scan</string>
 
     <string name="playlist_cover">playlist cover</string>
