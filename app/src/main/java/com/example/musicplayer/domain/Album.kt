@@ -1,10 +1,12 @@
 package com.example.musicplayer.domain
 
+import java.util.UUID
+
 
 data class Album(
-    val title: String,
-    val releaseYear: Int,
-    val songs: List<Song> = listOf(),
-    val makers: List<Maker> = listOf(),
-    val coverUri: String? = null
-): Entity()
+    override val id: UUID,
+    var title: String,
+    var releaseYear: Int,
+    var makers: List<Maker> = listOf(),
+    var coverUri: String? = null
+): Entity

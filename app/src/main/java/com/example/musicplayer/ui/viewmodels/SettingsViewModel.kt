@@ -2,9 +2,7 @@ package com.example.musicplayer.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.musicplayer.domain.usecases.AddMusicFolderUseCase
-import com.example.musicplayer.domain.usecases.GetMusicFoldersUseCase
-import com.example.musicplayer.domain.usecases.RemoveMusicFolderUseCase
+import com.example.musicplayer.domain.repositories.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,11 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val getMusicFoldersUseCase: GetMusicFoldersUseCase,
-    private val addMusicFolderUseCase: AddMusicFolderUseCase,
-    private val removeMusicFolderUseCase: RemoveMusicFolderUseCase
+    private val settingsRepository: SettingsRepository
 ) : ViewModel()  {
-    val folders: StateFlow<Set<String>> = getMusicFoldersUseCase().stateIn(
+    val folders: StateFlow<Set<String>> = settingsRepository.folders.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         setOf()
@@ -28,13 +24,13 @@ class SettingsViewModel @Inject constructor(
 
     fun addFolder(uri : String) {
         CoroutineScope(Dispatchers.IO).launch {
-            addMusicFolderUseCase(uri)
+            settingsRepository.addFolder(uri)
         }
     }
 
     fun removeFolder(uri : String) {
         CoroutineScope(Dispatchers.IO).launch {
-            removeMusicFolderUseCase(uri)
+            settingsRepository.removeFolder(uri)
         }
     }
 }

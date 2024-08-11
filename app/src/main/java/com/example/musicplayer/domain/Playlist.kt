@@ -1,9 +1,11 @@
 package com.example.musicplayer.domain
 
 import java.time.LocalDateTime
+import java.util.UUID
 
 data class Playlist(
-    val name: String,
-    val created: LocalDateTime,
-    val songs: List<Song> = listOf()
-): Entity()
+    override val id: UUID,
+    var name: String,
+    var created: LocalDateTime,
+    var songIds: List<UUID> = listOf()
+): Entity

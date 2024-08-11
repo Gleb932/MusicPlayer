@@ -1,5 +1,8 @@
 package com.example.musicplayer.domain
 
+import java.util.UUID
+
 data class Artist(
-    val name: String
-): Entity()
+    override val id: UUID,
+    var name: String
+): Entity

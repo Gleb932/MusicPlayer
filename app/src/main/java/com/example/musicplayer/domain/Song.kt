@@ -1,10 +1,17 @@
 package com.example.musicplayer.domain
 
+import androidx.compose.ui.graphics.ImageBitmap
+import java.util.UUID
+
 data class Song(
-    val title: String,
-    var duration: Int? = null,
+    override val id: UUID,
+    var title: String,
+    var duration: Long? = null,
     var releaseYear: Int? = null,
-    val genres: List<Genre>? = listOf(),
+    var albumId: UUID? = null,
+    var genres: List<Genre> = listOf(),
+    var makers: List<Maker> = listOf(),
     var sourceUri: String? = null,
     var coverUri: String? = null,
-): Entity()
+    var cover: ImageBitmap? = null
+): Entity

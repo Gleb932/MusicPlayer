@@ -1,8 +1,8 @@
 package com.example.musicplayer.domain.repositories
 
 import com.example.musicplayer.domain.Artist
-import com.example.musicplayer.domain.Song
+import kotlinx.coroutines.flow.StateFlow
 
-interface ArtistRepository {
-    fun getSongArtists(song: Song): List<Artist>
+interface ArtistRepository: Repository<Artist> {
+    fun getLocalArtists(): StateFlow<List<Artist>>
 }

@@ -1,6 +1,5 @@
 package com.example.musicplayer.ui.viewmodels
 
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
@@ -35,16 +34,12 @@ class PlayerScreenViewModel @Inject constructor(
     private var trackingJob: Job? = null
 
     private fun mapState(playerState: PlayerState, position: Long): PlayerScreenUiState {
-        playerState.currentSong?.bigCover  = playerState.currentSong?.bigCover ?: playerState.currentSong?.song?.let{
-            getSongCoverUseCase(it, Pair(1000, 1000))?.asImageBitmap()
-        }
         return PlayerScreenUiState(
             currentMedia = playerState.currentMediaItem,
             title = playerState.currentMediaItem?.mediaMetadata?.title
                 ?.let { it.toString() } ?: "",
             artist = playerState.currentMediaItem?.mediaMetadata?.artist
                 ?.let { it.toString() } ?: "Unknown artist",
-            bigCover = playerState.currentSong?.bigCover,
             isPlaying = playerState.isPlaying,
             duration = formatMillis(playerState.duration),
             position = formatMillis(position),

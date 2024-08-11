@@ -1,32 +1,21 @@
 package com.example.musicplayer.data.repositories
 
-import android.content.Context
-import com.example.musicplayer.data.DataSource
-import com.example.musicplayer.data.Mapper
+import com.example.musicplayer.data.mediastore.repositories.AlbumMediaStoreRepository
 import com.example.musicplayer.domain.Album
-import com.example.musicplayer.domain.Song
-import com.example.musicplayer.domain.repositories.AlbumRepository
+import kotlinx.coroutines.flow.StateFlow
+import java.util.UUID
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class AlbumRepositoryImpl @Inject constructor(
-    private val settingsRepository: SettingsRepositoryImpl,
-    private val context: Context,
-    private val mapper: Mapper
-): AlbumRepository {
-    override fun getSongAlbum(song: Song): Album? {
-        val source = mapper.getSource(song.id)
-        when(source) {
-            DataSource.ROOM -> TODO()
-            DataSource.MEDIA_STORE -> TODO()
-            null -> TODO()
-        }
+    private val albumMediaStoreRepository: AlbumMediaStoreRepository
+): AlbumDataRepository, BaseCompositeRepository<Album>(listOf(albumMediaStoreRepository)) {
+    override fun getLocalAlbums(): StateFlow<List<Album>> {
+        return albumMediaStoreRepository.getFlow()
     }
 
-    override fun getLocalAlbums(): List<Album> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getSavedAlbums(): List<Album> {
+    override fun getArtistAlbums(songId: UUID): List<Album> {
         TODO("Not yet implemented")
     }
 }

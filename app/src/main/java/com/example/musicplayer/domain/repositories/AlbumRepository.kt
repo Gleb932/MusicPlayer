@@ -1,10 +1,10 @@
 package com.example.musicplayer.domain.repositories
 
 import com.example.musicplayer.domain.Album
-import com.example.musicplayer.domain.Song
+import kotlinx.coroutines.flow.StateFlow
+import java.util.UUID
 
-interface AlbumRepository {
-    fun getSongAlbum(song: Song): Album?
-    fun getLocalAlbums():List<Album>
-    fun getSavedAlbums():List<Album>
+interface AlbumRepository: Repository<Album> {
+    fun getLocalAlbums(): StateFlow<List<Album>>
+    fun getArtistAlbums(songId: UUID): List<Album>
 }

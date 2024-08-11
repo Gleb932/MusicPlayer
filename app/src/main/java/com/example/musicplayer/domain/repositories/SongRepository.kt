@@ -1,10 +1,10 @@
 package com.example.musicplayer.domain.repositories
 
-import android.graphics.Bitmap
 import com.example.musicplayer.domain.Song
+import kotlinx.coroutines.flow.StateFlow
+import java.util.UUID
 
-interface SongRepository {
-    fun getLocalSongs():List<Song>
-    fun getSavedSongs():List<Song>
-    fun getThumbnail(song: Song, size: Pair<Int, Int>): Bitmap?
+interface SongRepository: Repository<Song> {
+    fun getLocalSongs(): StateFlow<List<Song>>
+    fun getAlbumSongs(albumId: UUID): List<Song>
 }

@@ -1,6 +1,5 @@
 package com.example.musicplayer.ui
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,14 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.musicplayer.R
-import com.example.musicplayer.domain.Artist
-import com.example.musicplayer.domain.Song
 import com.example.musicplayer.ui.states.SongItemUiState
 import com.example.musicplayer.ui.states.SongsUiState
-import com.example.musicplayer.ui.theme.MusicPlayerTheme
 
 @Composable
 fun SongList(
@@ -85,8 +80,8 @@ fun SongItem(songItemUiState: SongItemUiState, onClick: (SongItemUiState) -> Uni
         ) {
             Text(songItemUiState.song.title)
             Text(
-                if(songItemUiState.artists.isNotEmpty())
-                    songItemUiState.artists.joinToString { it.name }
+                if(songItemUiState.mainArtist != null)
+                    songItemUiState.mainArtist.name
                 else
                     stringResource(id = R.string.unknown_artist),
                 fontWeight = FontWeight.Light
@@ -101,21 +96,5 @@ fun SongItem(songItemUiState: SongItemUiState, onClick: (SongItemUiState) -> Uni
                 contentDescription = stringResource(id = R.string.actions),
                 modifier = Modifier.size(128.dp))
         }
-    }
-}
-
-@Preview(name = "Light Mode")
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
-@Composable
-fun SongListPreview() {
-    MusicPlayerTheme {
-        SongList(SongsUiState(listOf(
-            SongItemUiState(Song("test1"), listOf(Artist("Test artist"), Artist("test 3"))),
-            SongItemUiState(Song("test2"), listOf(Artist("Test artist 2"), Artist("test 3")))
-        )), {})
     }
 }

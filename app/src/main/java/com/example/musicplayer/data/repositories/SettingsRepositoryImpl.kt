@@ -7,7 +7,9 @@ import com.example.musicplayer.data.SettingsKeys
 import com.example.musicplayer.domain.repositories.SettingsRepository
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class SettingsRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ): SettingsRepository {

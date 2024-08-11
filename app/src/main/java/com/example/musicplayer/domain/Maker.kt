@@ -1,6 +1,9 @@
 package com.example.musicplayer.domain
 
+import java.util.UUID
+
 data class Maker(
-    val artist: Artist,
-    val role: MakerRole
-): Entity()
+    override val id: UUID,
+    var artistId: UUID,
+    var role: MakerRole?
+): Entity

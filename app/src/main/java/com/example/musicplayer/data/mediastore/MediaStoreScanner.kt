@@ -1,11 +1,11 @@
-package com.example.musicplayer.data
+package com.example.musicplayer.data.mediastore
 
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.documentfile.provider.DocumentFile
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -13,8 +13,7 @@ import kotlinx.coroutines.launch
 
 class MediaStoreScanner<T> (
     private val folders: Flow<Set<String>>,
-    private val context: Context,
-    private val scan: (Uri) -> List<T>
+    @ApplicationContext private val context: Context
 ){
     private var curFolders: Set<String> = setOf()
     init {
@@ -29,28 +28,34 @@ class MediaStoreScanner<T> (
         }
     }
 
-    fun getLocalFiles(): List<T> {
-        return scan(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI) + scanCustomFolders(curFolders)
+    fun getLocalFiles(contentUri: Uri, scan: (Uri, String?) -> List<T>, selection: String? = null): List<T> {
+        val res = mutableListOf<T>()
+        res += scan(contentUri, selection)
+        for(folder in getNestedCustomFolders(curFolders)) {
+            res += scan(folder, selection)
+        }
+        return res
     }
 
-    private fun scanCustomFolders(folders: Set<String>): List<T>
+    private fun getNestedCustomFolders(folders: Set<String>): Set<Uri>
     {
-        val result = mutableListOf<T>()
+        val nestedFolders = mutableSetOf<Uri>()
         for(folder in folders) {
             val folderTree = DocumentFile.fromTreeUri(context, Uri.parse(folder)) ?: continue
-            result += searchFolder(folderTree)
+            nestedFolders += folderTree.uri
+            nestedFolders += getNestedFolders(folderTree)
         }
-        return result
+        return nestedFolders
     }
 
-    private fun searchFolder(folder: DocumentFile): List<T>
+    private fun getNestedFolders(folder: DocumentFile): Set<Uri>
     {
-        val result = mutableListOf<T>()
+        val result = mutableSetOf<Uri>()
         for(file in folder.listFiles())
         {
             if(file.isDirectory) {
-                searchFolder(file)
-                result += scan(file.uri)
+                result += getNestedFolders(file)
+                result += folder.uri
             }
         }
         return result

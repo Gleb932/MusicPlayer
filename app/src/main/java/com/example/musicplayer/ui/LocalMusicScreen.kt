@@ -1,6 +1,5 @@
 package com.example.musicplayer.ui
 
-import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -8,7 +7,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -17,11 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.viewmodels.LocalMusicScreenViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LocalMusicScreen(
     navController: NavController,
@@ -55,17 +49,7 @@ fun LocalMusicScreen(
             }
         },
     ) {
-        val readPermission = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            rememberPermissionState(android.Manifest.permission.READ_MEDIA_AUDIO)
-        }else{
-            rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
         val songListUiState by localMusicScreenViewModel.songListUiState.collectAsStateWithLifecycle()
-        LaunchedEffect(readPermission) {
-            if (readPermission.status.isGranted) {
-                localMusicScreenViewModel.refreshSongsUiState()
-            }
-        }
         SongList(
             uiState = songListUiState,
             play =
