@@ -50,6 +50,18 @@ object PlayerHolder: Player.Listener {
             )
     }
 
+    fun syncState() {
+        _playerState.update {
+            PlayerState(
+                currentMediaItem = mediaController?.currentMediaItem,
+                songList = it.songList,
+                mediaItems = it.mediaItems,
+                isPlaying = mediaController?.isPlaying ?: false,
+                duration = mediaController?.duration ?: 0
+            )
+        }
+    }
+
     private fun mediaItemFromSong(song: Song): MediaItem? {
         val sourceUri = song.sourceUri ?: return null
         val mediaMetadataBuilder = MediaMetadata.Builder()

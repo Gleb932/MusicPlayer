@@ -78,6 +78,7 @@ class MainActivity : ComponentActivity() {
             // MediaController is available here with controllerFuture.get()
             try {
                 PlayerHolder.mediaController = controllerFuture.get()
+                PlayerHolder.syncState()
                 PlayerHolder.mediaController!!.addListener(PlayerHolder)
                 // The session accepted the connection.
             } catch (e: ExecutionException) {
