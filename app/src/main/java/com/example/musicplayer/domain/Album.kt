@@ -1,5 +1,6 @@
 package com.example.musicplayer.domain
 
+import android.net.Uri
 import java.util.UUID
 
 
@@ -8,5 +9,5 @@ data class Album(
     var title: String,
     var releaseYear: Int,
     var makers: List<Maker> = listOf(),
-    var coverUri: String? = null
+    var coverUri: Uri? = null
 ): Entity

@@ -1,12 +1,14 @@
 package com.example.musicplayer.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -20,10 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.states.SongItemUiState
 import com.example.musicplayer.ui.states.SongsUiState
@@ -36,7 +40,7 @@ fun SongList(
 ) {
     LazyColumn(modifier = modifier) {
         items(
-            key = {it.song.id},
+            key = {it.songId},
             items = uiState.songs
         ){
             SongItem(it, play)
@@ -50,41 +54,36 @@ fun SongItem(songItemUiState: SongItemUiState, onClick: (SongItemUiState) -> Uni
 {
     Row(
         modifier = Modifier
+            .heightIn(max = 64.dp)
             .clickable{ onClick(songItemUiState) }
             .then(modifier)
     ){
-        if(songItemUiState.cover != null)
-        {
-            Image(
-                songItemUiState.cover,
-                contentDescription = stringResource(id = R.string.song_cover),
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .size(64.dp, 64.dp)
-                    .align(Alignment.CenterVertically)
-            )
-        }else{
-            Image(
-                imageVector = Icons.Default.MusicNote,
-                contentDescription = stringResource(id = R.string.song_cover),
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .background(color = Color.White)
-                    .size(64.dp, 64.dp)
-                    .align(Alignment.CenterVertically)
-            )
-        }
+        val notePainter = rememberVectorPainter(image = Icons.Default.MusicNote)
+        AsyncImage(
+            model = songItemUiState.artUri,
+            contentDescription = "song art",
+            placeholder = notePainter,
+            error = notePainter,
+            fallback = notePainter,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .width(64.dp)
+                .height(64.dp)
+                .align(Alignment.CenterVertically)
+                .background(Color.White)
+        )
         Column(modifier = Modifier
             .weight(1F)
             .padding(horizontal = 10.dp)
         ) {
-            Text(songItemUiState.song.title)
             Text(
-                if(songItemUiState.mainArtist != null)
-                    songItemUiState.mainArtist.name
-                else
-                    stringResource(id = R.string.unknown_artist),
-                fontWeight = FontWeight.Light
+                songItemUiState.title,
+                maxLines = 1
+            )
+            Text(
+                songItemUiState.mainArtist ?: stringResource(id = R.string.unknown_artist),
+                fontWeight = FontWeight.Light,
+                maxLines = 1
             )
         }
         IconButton(

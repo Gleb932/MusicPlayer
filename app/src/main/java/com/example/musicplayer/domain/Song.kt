@@ -1,6 +1,6 @@
 package com.example.musicplayer.domain
 
-import androidx.compose.ui.graphics.ImageBitmap
+import android.net.Uri
 import java.util.UUID
 
 data class Song(
@@ -11,7 +11,6 @@ data class Song(
     var albumId: UUID? = null,
     var genres: List<Genre> = listOf(),
     var makers: List<Maker> = listOf(),
-    var sourceUri: String? = null,
-    var coverUri: String? = null,
-    var cover: ImageBitmap? = null
+    var sourceUri: Uri? = null,
+    var coverUri: Uri? = null
 ): Entity

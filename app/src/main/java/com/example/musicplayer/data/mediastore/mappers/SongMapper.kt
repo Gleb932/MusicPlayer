@@ -15,7 +15,7 @@ object SongMapper: ReadMapper<Song, SongMediaStoreEntry> {
             null,
             listOf(),
             listOf(),
-            data.filepath,
+            data.mediaStoreUri,
             null
         )
         return song

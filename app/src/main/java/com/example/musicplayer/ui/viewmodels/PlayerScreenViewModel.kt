@@ -40,6 +40,7 @@ class PlayerScreenViewModel @Inject constructor(
                 ?.let { it.toString() } ?: "",
             artist = playerState.currentMediaItem?.mediaMetadata?.artist
                 ?.let { it.toString() } ?: "Unknown artist",
+            artUri = playerState.currentMediaItem?.mediaMetadata?.artworkUri,
             isPlaying = playerState.isPlaying,
             duration = formatMillis(playerState.duration),
             position = formatMillis(position),
@@ -61,6 +62,7 @@ class PlayerScreenViewModel @Inject constructor(
 
     fun stopTrackingPosition() {
         trackingJob?.cancel()
+        trackingJob = null
     }
 
     fun onSliderMove(progress: Float) {

@@ -1,6 +1,5 @@
 package com.example.musicplayer.ui.viewmodels
 
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicplayer.data.LocalFilesScanner
@@ -34,9 +33,10 @@ class LocalMusicScreenViewModel @Inject constructor(
         return SongsUiState(
             songs.map { song ->
                 SongItemUiState(
-                song,
-                song.makers.firstOrNull()?.let { artistRepository.getEntity(it.artistId) },
-                getSongCoverUseCase(song, COVER_SIZE)?.asImageBitmap()
+                    song.id,
+                    song.title,
+                    song.coverUri ?: song.sourceUri,
+                    song.makers.firstOrNull()?.let { artistRepository.getEntity(it.artistId)?.name },
             ) }
         )
     }
@@ -46,7 +46,7 @@ class LocalMusicScreenViewModel @Inject constructor(
     }
 
     fun select(songItem: SongItemUiState){
-        PlayerHolder.select(songItem.song.id)
+        PlayerHolder.select(songItem.songId)
         PlayerHolder.play()
     }
 }

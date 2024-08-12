@@ -1,12 +1,11 @@
 package com.example.musicplayer.ui.states
 
-import androidx.compose.ui.graphics.ImageBitmap
-import com.example.musicplayer.domain.Artist
-import com.example.musicplayer.domain.Song
+import android.net.Uri
+import java.util.UUID
 
 data class SongItemUiState (
-    val song: Song,
-    val mainArtist: Artist? = null,
-    val cover: ImageBitmap? = null,
-    var bigCover: ImageBitmap? = null
+    val songId: UUID,
+    val title: String,
+    val artUri: Uri?,
+    val mainArtist: String? = null
 )

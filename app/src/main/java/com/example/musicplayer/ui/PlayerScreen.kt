@@ -1,13 +1,12 @@
 package com.example.musicplayer.ui
 
 import androidx.annotation.OptIn
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -27,12 +26,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.viewmodels.PlayerScreenViewModel
 
@@ -51,28 +53,22 @@ fun PlayerScreen(
     }
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-                .fillMaxSize()
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
         ) {
-            if (state.bigCover != null) {
-                Image(
-                    state.bigCover!!,
-                    contentDescription = "song cover",
-                    modifier = Modifier
-                        .aspectRatio(1F)
-                        .fillMaxWidth()
-                        .padding(30.dp)
-                )
-            } else {
-                Image(Icons.Default.MusicNote,
-                    contentDescription = "song cover",
-                    modifier = Modifier
-                        .aspectRatio(1F)
-                        .fillMaxWidth()
-                        .padding(30.dp)
-                        .background(Color.White)
-                )
-            }
+            val notePainter = rememberVectorPainter(image = Icons.Default.MusicNote)
+            AsyncImage(
+                model = state.artUri,
+                contentDescription = "song art",
+                placeholder = notePainter,
+                error = notePainter,
+                fallback = notePainter,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .weight(0.1F)
+                    .padding(30.dp)
+                    .background(Color.White)
+            )
             Text(state.title)
             Text(state.artist)
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
@@ -111,6 +107,7 @@ fun PlayerScreen(
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }

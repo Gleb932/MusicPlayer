@@ -1,6 +1,5 @@
 package com.example.musicplayer.ui
 
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -69,10 +68,7 @@ object PlayerHolder: Player.Listener {
         song.makers.firstOrNull()?.artistId?.let {
             mediaMetadataBuilder.setArtist(artistRepository.getEntity(it)?.name)
         }
-        song.cover?.let { mediaMetadataBuilder.setArtworkData(
-            it.asAndroidBitmap().toByteArray(),
-            MediaMetadata.PICTURE_TYPE_FRONT_COVER)
-        }
+        mediaMetadataBuilder.setArtworkUri(song.sourceUri)
         val mediaMetadata = mediaMetadataBuilder.build()
         val mediaItemBuilder = MediaItem.Builder()
             .setMediaId(song.id.toString())
