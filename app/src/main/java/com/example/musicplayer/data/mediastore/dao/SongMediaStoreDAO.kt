@@ -1,4 +1,4 @@
-package com.example.musicplayer.data.mediastore
+package com.example.musicplayer.data.mediastore.dao
 
 import android.content.ContentUris
 import android.content.Context

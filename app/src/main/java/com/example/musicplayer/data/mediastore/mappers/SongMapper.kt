@@ -1,7 +1,7 @@
 package com.example.musicplayer.data.mediastore.mappers
 
 import com.example.musicplayer.data.ReadMapper
-import com.example.musicplayer.data.mediastore.SongMediaStoreEntry
+import com.example.musicplayer.data.mediastore.dao.SongMediaStoreEntry
 import com.example.musicplayer.domain.Song
 import java.util.UUID
 

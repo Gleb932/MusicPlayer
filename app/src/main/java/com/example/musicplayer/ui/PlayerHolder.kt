@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -28,12 +29,15 @@ object PlayerHolder: Player.Listener {
 
     val playerState: StateFlow<PlayerState> by lazy {
         songRepository.getLocalSongs()
-            .combine(_playerState) { songs, state ->
-                mapState(songs, state)
+            .map { songs ->
+                Pair(songs, songs.mapNotNull { song -> mediaItemFromSong(song) } )
             }
             .onEach {
-                mediaController?.addMediaItems(it.mediaItems)
+                mediaController?.setMediaItems(it.second)
                 mediaController?.prepare()
+            }
+            .combine(_playerState) { (songs, mediaItems), state ->
+                mapState(songs, mediaItems, state)
             }
             .stateIn(
                 CoroutineScope(context = Dispatchers.Main),
@@ -42,10 +46,10 @@ object PlayerHolder: Player.Listener {
             )
     }
 
-    private fun mapState(songs: List<Song>, playerState: PlayerState): PlayerState {
+    private fun mapState(songs: List<Song>, mediaItems: List<MediaItem>, playerState: PlayerState): PlayerState {
         return playerState.copy(
                 songList = songs,
-                mediaItems = songs.mapNotNull { mediaItemFromSong(it) }
+                mediaItems = mediaItems
             )
     }
 

@@ -1,4 +1,4 @@
-package com.example.musicplayer.data.mediastore
+package com.example.musicplayer.data.mediastore.dao
 
 import android.content.ContentUris
 import android.content.Context
@@ -46,6 +46,7 @@ class AlbumMediaStoreDAO @Inject constructor(
                 MediaStore.Audio.Albums._ID,
                 MediaStore.Audio.Albums.FIRST_YEAR,
                 MediaStore.Audio.Albums.LAST_YEAR,
+                MediaStore.Audio.AudioColumns.ARTIST_ID
             ),
             selection,
             null,
@@ -57,7 +58,8 @@ class AlbumMediaStoreDAO @Inject constructor(
                 val id = cursor.getLong(1)
                 val firstYear = cursor.getInt(2)
                 val lastYear = cursor.getInt(3)
-                res.add(AlbumMediaStoreEntry(title, ContentUris.withAppendedId(uri, id), id, firstYear, lastYear))
+                val artistId = cursor.getLong(4)
+                res.add(AlbumMediaStoreEntry(title, ContentUris.withAppendedId(uri, id), id, firstYear, lastYear, artistId))
             }
             return res
         } ?: listOf()

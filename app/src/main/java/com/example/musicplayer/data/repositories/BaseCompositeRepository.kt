@@ -1,7 +1,6 @@
 package com.example.musicplayer.data.repositories
 
 import com.example.musicplayer.data.DataSource
-import com.example.musicplayer.data.mediastore.repositories.MediaStoreRepository
 import com.example.musicplayer.domain.Entity
 import java.util.UUID
 
@@ -78,13 +77,5 @@ open class BaseCompositeRepository<T : Entity>(
             }
         }
         return null
-    }
-
-    override fun scanLocalFiles() {
-        for(repository in repositories) {
-            if (repository.dataSource == DataSource.MEDIA_STORE) {
-                (repository as MediaStoreRepository).scanLocalFiles()
-            }
-        }
     }
 }
