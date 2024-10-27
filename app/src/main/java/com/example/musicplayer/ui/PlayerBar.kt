@@ -26,14 +26,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.states.PlayerBarUiState
 import com.example.musicplayer.ui.viewmodels.PlayerBarViewModel
 
 @Composable
 fun PlayerBar(
-    navController: NavController,
+    onNavigateToPlayer: () -> Unit,
     modifier: Modifier = Modifier,
     playerBarViewModel: PlayerBarViewModel = hiltViewModel()
 ) {
@@ -41,7 +40,7 @@ fun PlayerBar(
     if (playerBarUiState.mediaItem == null) return
     Row(
         modifier = Modifier
-            .clickable { navController.navigate("player") }
+            .clickable(onClick = onNavigateToPlayer)
             .background(MaterialTheme.colorScheme.secondaryContainer)
             .then(modifier)
     ){
@@ -62,14 +61,19 @@ fun PlayerBar(
             .weight(1F)
             .padding(horizontal = 10.dp)
         ) {
-            Text(metadata?.title.toString(), color = MaterialTheme.colorScheme.onSecondaryContainer)
+            Text(
+                metadata?.title.toString(),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                maxLines = 1
+            )
             Text(
                 if(metadata?.artist != null)
                     metadata.artist.toString()
                 else
                     stringResource(id = R.string.unknown_artist),
                 fontWeight = FontWeight.Light,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                maxLines = 1
             )
         }
         IconButton(

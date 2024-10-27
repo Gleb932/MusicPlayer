@@ -64,6 +64,7 @@ class SongMediaStoreDAO @Inject constructor(
                 val id = cursor.getLong(4)
                 val albumId = cursor.getLong(5)
                 val artistId = cursor.getLong(6)
+                if(title == null) continue
                 res.add(SongMediaStoreEntry(title, ContentUris.withAppendedId(uri, id), id, albumId, artistId, duration, data, year))
             }
             return res

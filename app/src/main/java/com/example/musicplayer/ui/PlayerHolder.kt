@@ -53,7 +53,7 @@ object PlayerHolder: Player.Listener {
             )
     }
 
-    fun syncState() {
+    fun syncState(reAddSongs: Boolean) {
         _playerState.update {
             PlayerState(
                 currentMediaItem = mediaController?.currentMediaItem,
@@ -63,6 +63,7 @@ object PlayerHolder: Player.Listener {
                 duration = mediaController?.duration ?: 0
             )
         }
+        if (reAddSongs) onCreate()
     }
 
     private fun mediaItemFromSong(song: Song): MediaItem? {
@@ -111,9 +112,8 @@ object PlayerHolder: Player.Listener {
 
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
-        if(updateCurrentWhenReady && playbackState == Player.STATE_READY) {
+        if(playbackState == Player.STATE_READY) {
             updateCurrent()
-            updateCurrentWhenReady = false
         }
     }
 
@@ -134,5 +134,10 @@ object PlayerHolder: Player.Listener {
         } else {
             updateCurrentWhenReady = true
         }
+    }
+
+    fun onCreate() {
+        mediaController?.setMediaItems(playerState.value.mediaItems)
+        mediaController?.prepare()
     }
 }

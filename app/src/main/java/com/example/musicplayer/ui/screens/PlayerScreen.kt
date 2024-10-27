@@ -1,4 +1,4 @@
-package com.example.musicplayer.ui
+package com.example.musicplayer.ui.screens
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.viewmodels.PlayerScreenViewModel
@@ -41,7 +40,6 @@ import com.example.musicplayer.ui.viewmodels.PlayerScreenViewModel
 @OptIn(UnstableApi::class)
 @Composable
 fun PlayerScreen(
-    navController: NavController,
     playerScreenViewModel: PlayerScreenViewModel = hiltViewModel()
 ) {
     val state by playerScreenViewModel.uiState.collectAsStateWithLifecycle()

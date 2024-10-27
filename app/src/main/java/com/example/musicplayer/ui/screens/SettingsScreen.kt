@@ -1,4 +1,4 @@
-package com.example.musicplayer.ui
+package com.example.musicplayer.ui.screens
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -26,19 +26,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.theme.MusicPlayerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navController: NavController) {
+fun SettingsScreen(
+    onNavigateBack: () -> Unit,
+    onNavigateFolderSettings: () -> Unit
+) {
     Scaffold(
         topBar = { TopAppBar(
             title = { Text(stringResource(id = R.string.settings_title)) },
             navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
+                IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.back))
                 }
             }
@@ -47,7 +48,7 @@ fun SettingsScreen(navController: NavController) {
         Column(modifier = Modifier.padding(it)) {
             SettingsGroup(
                 stringResource(id = R.string.music_folders),
-                { navController.navigate("folderSettings") },
+                onNavigateFolderSettings,
                 Modifier.padding(vertical = 10.dp),
                 icon = Icons.Default.Folder)
         }
@@ -93,6 +94,6 @@ fun SettingsGroup(name: String, onClick: () -> Unit, modifier: Modifier = Modifi
 @Composable
 fun SettingsScreenPreview() {
     MusicPlayerTheme {
-        SettingsScreen(rememberNavController())
+        SettingsScreen({}, {})
     }
 }

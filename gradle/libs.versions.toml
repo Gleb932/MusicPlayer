@@ -1,22 +1,24 @@
 [versions]
-agp = "8.4.1"
+kotlin="2.0.21"
+agp = "8.7.1"
 datastorePreferencesCore = "1.1.1"
 hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
-kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleVersion = "2.7.0"
-activityCompose = "1.9.0"
-composeBom = "2024.05.00"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+lifecycleVersion = "2.8.6"
+activityCompose = "1.9.3"
+composeBom = "2024.10.00"
 room = "2.6.1"
-navigationCompose = "2.7.7"
+navigationCompose = "2.8.3"
 documentfile = "1.0.1"
 coil = "2.6.0"
-media3 = "1.3.1"
+media3 = "1.4.1"
 accompanistPermissionsVersion = "0.34.0"
+serialization = "2.0.21"
+kotlinxSerializationJsonVersion = "1.7.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,10 +52,12 @@ androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplaye
 androidx-media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", version.ref = "media3" }
 androidx-media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJsonVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 hiltPlugin = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
-
+serializationPlugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

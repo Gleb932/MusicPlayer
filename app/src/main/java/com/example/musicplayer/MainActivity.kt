@@ -38,6 +38,8 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var localFilesScanner: LocalFilesScanner
 
+    private var reAddSongs = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val requestPermissionLauncher =
@@ -45,8 +47,10 @@ class MainActivity : ComponentActivity() {
                 ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
                 if (isGranted) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        localFilesScanner.scanLocalFiles()
+                    if(songRepository.getLocalSongs().value.isEmpty()) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            localFilesScanner.scanLocalFiles()
+                        }
                     }
                 } else {
                     Toast.makeText(
@@ -63,6 +67,7 @@ class MainActivity : ComponentActivity() {
         }
         PlayerHolder.songRepository = songRepository
         PlayerHolder.artistRepository = artistRepository
+        reAddSongs = true
         setContent {
             MusicPlayerTheme {
                 NavigationRoot()
@@ -78,8 +83,10 @@ class MainActivity : ComponentActivity() {
             // MediaController is available here with controllerFuture.get()
             try {
                 PlayerHolder.mediaController = controllerFuture.get()
-                PlayerHolder.syncState()
                 PlayerHolder.mediaController!!.addListener(PlayerHolder)
+                //re add songs that are in the player holder, but were destroyed in the player service, unless it was playing during onDestroy
+                PlayerHolder.syncState(reAddSongs && PlayerHolder.mediaController!!.isPlaying == false)
+                reAddSongs = false
                 // The session accepted the connection.
             } catch (e: ExecutionException) {
                 Log.e("MediaController", "Failed to create")

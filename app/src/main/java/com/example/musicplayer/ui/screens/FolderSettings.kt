@@ -1,4 +1,4 @@
-package com.example.musicplayer.ui
+package com.example.musicplayer.ui.screens
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -30,14 +30,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.viewmodels.SettingsViewModel
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FolderSettings(navController: NavController, viewModel: SettingsViewModel = hiltViewModel())
+fun FolderSettings(onNavigateBack: () -> Unit, viewModel: SettingsViewModel = hiltViewModel())
 {
     val folders by viewModel.folders.collectAsStateWithLifecycle(initialValue = setOf())
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) {
@@ -49,7 +48,7 @@ fun FolderSettings(navController: NavController, viewModel: SettingsViewModel = 
         topBar = { TopAppBar(
             title = { Text(stringResource(id = R.string.folder_settings_title)) },
             navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
+                IconButton(onClick = onNavigateBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.back))
                 }
             }

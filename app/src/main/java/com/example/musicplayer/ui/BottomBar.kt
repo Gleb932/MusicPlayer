@@ -1,5 +1,6 @@
 package com.example.musicplayer.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Save
@@ -9,39 +10,53 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import com.example.musicplayer.R
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.musicplayer.ui.routes.Local
+import com.example.musicplayer.ui.routes.NavBarRoute
+import com.example.musicplayer.ui.routes.Saved
+import com.example.musicplayer.ui.routes.Settings
 
+val routes = listOf(
+    NavBarRoute("Saved", Saved, Icons.Default.Save),
+    NavBarRoute("Local", Local, Icons.Default.FolderOpen),
+    NavBarRoute("Settings", Settings, Icons.Default.Settings)
+)
+
+@SuppressLint("RestrictedApi")
 @Composable
 fun BottomBar(navController: NavController) {
-    NavigationBar() {
-        NavigationBarItem(
-            icon = { Icon(
-                imageVector = Icons.Default.Save,
-                contentDescription = stringResource(id = R.string.saved_nav)
-            ) },
-            onClick = { navController.navigate("saved") },
-            label = { Text(stringResource(id = R.string.saved_title)) },
-            selected = navController.currentDestination?.parent?.route == "saved"
-        )
-        NavigationBarItem(
-            icon = { Icon(
-                imageVector = Icons.Default.FolderOpen,
-                contentDescription = stringResource(id = R.string.local_nav)
-            ) },
-            onClick = { navController.navigate("local") },
-            label = { Text(stringResource(id = R.string.local_title)) },
-            selected = navController.currentDestination?.parent?.route == "local"
-        )
-        NavigationBarItem(
-            icon = { Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = stringResource(id = R.string.settings_nav)
-            ) },
-            onClick = { navController.navigate("settings") },
-            label = { Text(stringResource(id = R.string.settings_title)) },
-            selected = navController.currentDestination?.parent?.route == "settings"
-        )
+    val navBackStackEntry = navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry.value?.destination
+    NavigationBar {
+        routes.forEach {
+            route ->
+            NavigationBarItem(
+                icon = {
+                    Icon(
+                        imageVector = route.icon,
+                        contentDescription = route.name
+                    )
+                },
+                onClick = { navController.navigate(route.route) {
+                    // Pop up to the start destination of the graph to
+                    // avoid building up a large stack of destinations
+                    // on the back stack as users select items
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    // Avoid multiple copies of the same destination when
+                    // reselecting the same item
+                    launchSingleTop = true
+                    // Restore state when reselecting a previously selected item
+                    restoreState = true
+                } },
+                label = { Text(route.name) },
+                selected = currentDestination?.hierarchy?.any { it.hasRoute(route.route::class) } == true
+            )
+        }
     }
 }

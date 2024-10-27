@@ -44,6 +44,7 @@ class ArtistMediaStoreDAO @Inject constructor(
             while (cursor.moveToNext()) {
                 val name = cursor.getString(0)
                 val id = cursor.getLong(1)
+                if(name == null) continue
                 res.add(ArtistMediaStoreEntry(name, ContentUris.withAppendedId(uri, id), id))
             }
             return res

@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.jetbrainsKotlinKapt)
     alias(libs.plugins.hiltPlugin)
+    alias(libs.plugins.serializationPlugin)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -43,7 +45,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packaging {
         resources {
@@ -76,6 +78,7 @@ dependencies {
     implementation(libs.androidx.media3.ui)
     implementation(libs.google.accompanist.permissions)
     implementation(libs.androidx.media3.session)
+    implementation(libs.kotlinx.serialization.json)
     kapt(libs.hilt.android.compiler)
     kapt(libs.androidx.room.compiler)
     testImplementation(libs.junit)

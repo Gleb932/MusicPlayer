@@ -6,7 +6,7 @@ data class AlbumMediaStoreEntry (
     val name: String,
     val mediaStoreUri: Uri,
     val id: Long,
-    val firstYear: Int,
-    val lastYear: Int,
-    val artistId: Long
+    val firstYear: Int?,
+    val lastYear: Int?,
+    val artistId: Long?
 )

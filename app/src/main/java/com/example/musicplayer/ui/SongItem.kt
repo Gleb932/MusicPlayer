@@ -9,12 +9,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -30,32 +27,20 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.states.SongItemUiState
-import com.example.musicplayer.ui.states.SongsUiState
+
 
 @Composable
-fun SongList(
-    uiState: SongsUiState,
-    play: (SongItemUiState) -> Unit,
+fun SongItem(
+    songItemUiState: SongItemUiState,
+    onClick: (SongItemUiState) -> Unit,
+    actions: Map<String, (SongItemUiState) -> Unit>,
     modifier: Modifier = Modifier
-) {
-    LazyColumn(modifier = modifier) {
-        items(
-            key = {it.songId},
-            items = uiState.songs
-        ){
-            SongItem(it, play)
-            HorizontalDivider()
-        }
-    }
-}
-
-@Composable
-fun SongItem(songItemUiState: SongItemUiState, onClick: (SongItemUiState) -> Unit, modifier: Modifier = Modifier)
+)
 {
     Row(
         modifier = Modifier
             .heightIn(max = 64.dp)
-            .clickable{ onClick(songItemUiState) }
+            .clickable { onClick(songItemUiState) }
             .then(modifier)
     ){
         val notePainter = rememberVectorPainter(image = Icons.Default.MusicNote)

@@ -2,13 +2,10 @@ package com.example.musicplayer.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.util.UnstableApi
-import com.example.musicplayer.domain.usecases.GetSongCoverUseCase
 import com.example.musicplayer.ui.PlayerHolder
 import com.example.musicplayer.ui.formatMillis
 import com.example.musicplayer.ui.states.PlayerScreenUiState
 import com.example.musicplayer.ui.states.PlayerState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,14 +15,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
-@UnstableApi
-@HiltViewModel
-class PlayerScreenViewModel @Inject constructor(
-    val getSongCoverUseCase: GetSongCoverUseCase,
-): ViewModel() {
+class PlayerScreenViewModel: ViewModel() {
     private val position: MutableStateFlow<Long> = MutableStateFlow(0)
     val uiState = PlayerHolder.playerState
         .combine(position) { a, b -> Pair(a, b) }
