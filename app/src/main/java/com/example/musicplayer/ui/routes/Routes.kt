@@ -4,15 +4,19 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object Artists
+data class Artists(
+    val searchQuery: String? = null
+)
 
 @Serializable
 data class Albums(
+    val searchQuery: String? = null,
     val artistId: String? = null
 )
 
 @Serializable
 data class Songs(
+    val searchQuery: String? = null,
     val albumId: String? = null,
     val artistId: String? = null
 )

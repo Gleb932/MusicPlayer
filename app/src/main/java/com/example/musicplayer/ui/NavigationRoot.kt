@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.musicplayer.ui.routes.Albums
 import com.example.musicplayer.ui.routes.Artists
 import com.example.musicplayer.ui.routes.FolderSettings
@@ -43,7 +44,7 @@ fun NavigationRoot() {
                 selected,
                 onNavigateToSongs = { navController.navigate(Songs(), builder = navOptionsBuilder) },
                 onNavigateToAlbums = { navController.navigate(Albums(), builder = navOptionsBuilder) },
-                onNavigateToArtists = { navController.navigate(Artists, builder = navOptionsBuilder) }
+                onNavigateToArtists = { navController.navigate(Artists(), builder = navOptionsBuilder) }
             )
         }
     }
@@ -66,23 +67,44 @@ fun NavigationRoot() {
         ) {
             composable<Player> { PlayerScreen() }
             navigation<Local>(startDestination = Songs()) {
-                composable<Songs> {
+                composable<Songs> { navBackStackEntry ->
                     SongsScreen(
+                        @Composable { title: String ->
+                            TopSearchBar(title) { query ->
+                                navController.navigate(
+                                    navBackStackEntry.toRoute<Songs>().copy(searchQuery = query)
+                                )
+                            }
+                        },
                         musicTabRow(0),
                         playerBar,
                         mapOf()
                     )
                 }
-                composable<Albums> {
+                composable<Albums> { navBackStackEntry ->
                     AlbumsScreen(
+                        @Composable { title: String ->
+                            TopSearchBar(title) { query ->
+                                navController.navigate(
+                                    navBackStackEntry.toRoute<Albums>().copy(searchQuery = query)
+                                )
+                            }
+                        },
                         musicTabRow(1),
                         playerBar,
                         { navController.navigate(Songs(albumId = it.toString())) },
                         mapOf()
                     )
                 }
-                composable<Artists> {
+                composable<Artists> { navBackStackEntry ->
                     ArtistsScreen(
+                        @Composable { title: String ->
+                            TopSearchBar(title) { query ->
+                                navController.navigate(
+                                    navBackStackEntry.toRoute<Artists>().copy(searchQuery = query)
+                                )
+                            }
+                        },
                         musicTabRow(2),
                         playerBar,
                         { navController.navigate(Albums(artistId = it.toString())) },

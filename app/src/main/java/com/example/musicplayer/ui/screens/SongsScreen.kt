@@ -14,12 +14,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.musicplayer.R
 import com.example.musicplayer.ui.SongItem
-import com.example.musicplayer.ui.TopSearchBar
 import com.example.musicplayer.ui.states.SongItemUiState
 import com.example.musicplayer.ui.viewmodels.LocalSongsScreenViewModel
 
 @Composable
 fun SongsScreen(
+    searchBar: @Composable (String) -> Unit,
     musicTabRow: @Composable () -> Unit,
     playerBar: @Composable () -> Unit,
     actions: Map<String, (SongItemUiState) -> Unit>,
@@ -29,7 +29,7 @@ fun SongsScreen(
     Scaffold(
         topBar = {
             Column {
-                TopSearchBar(title = stringResource(id = R.string.songs_title), {})
+                searchBar(stringResource(id = R.string.songs_title))
                 musicTabRow()
             }
         },
