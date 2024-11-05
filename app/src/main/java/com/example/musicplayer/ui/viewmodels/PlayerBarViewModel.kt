@@ -17,7 +17,8 @@ class PlayerBarViewModel: ViewModel() {
     private fun mapState(playerState: PlayerState): PlayerBarUiState {
         return PlayerBarUiState(
             mediaItem = playerState.currentMediaItem,
-            isPlaying = playerState.isPlaying
+            isPlaying = playerState.isPlaying,
+            isPaused = playerState.isPaused
         )
     }
 

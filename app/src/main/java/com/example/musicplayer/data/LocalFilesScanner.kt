@@ -32,12 +32,14 @@ class LocalFilesScanner @Inject constructor(
         val artists = artistMediaStoreDAO.getAll().map { Pair(it, ArtistMapper.toDomain(it, UUID.randomUUID())) }
         val albums = albumMediaStoreDAO.getAll().map { Pair(it, AlbumMapper.toDomain(it, UUID.randomUUID())) }
         val songs = songMediaStoreDAO.getAll().map { Pair(it, SongMapper.toDomain(it, UUID.randomUUID())) }
-        linkAlbumsToArtists(artists, albums)
-        linkSongsToAlbums(albums, songs)
+        val filteredAlbums = filterFolderAlbums(artists, albums, songs)
+        linkAlbumsToArtists(artists, filteredAlbums)
+        linkSongsToArtists(artists, songs)
+        linkSongsToAlbums(filteredAlbums, songs)
         for(artist in artists) {
             artistRepository.store(artist.second, artist.first.id)
         }
-        for(album in albums) {
+        for(album in filteredAlbums) {
             albumRepository.store(album.second, album.first.id)
         }
         for(song in songs) {
@@ -52,7 +54,7 @@ class LocalFilesScanner @Inject constructor(
         for(artist in artists) {
             val artistAlbums = albums.filter { it.first.artistId == artist.first.id}
             for(album in artistAlbums){
-                album.second.makers = listOf(Maker(UUID.randomUUID(), artist.second.id, MakerRole.Undefined))
+                album.second.makers += Maker(UUID.randomUUID(), artist.second.id, MakerRole.AlbumArtist)
             }
         }
     }
@@ -65,7 +67,36 @@ class LocalFilesScanner @Inject constructor(
             val albumSongs = songs.filter { it.first.albumId == album.first.id}
             for(song in albumSongs){
                 song.second.albumId = album.second.id
-                song.second.makers = album.second.makers
+                song.second.makers += album.second.makers
+            }
+        }
+    }
+
+    private fun linkSongsToArtists(
+        artists: List<Pair<ArtistMediaStoreEntry, Artist>>,
+        songs: List<Pair<SongMediaStoreEntry, Song>>
+    ) {
+        for(artist in artists) {
+            val artistSongs = songs.filter { it.first.artistId == artist.first.id}
+            for(song in artistSongs){
+                song.second.makers += Maker(UUID.randomUUID(), artist.second.id, MakerRole.SongArtist)
+            }
+        }
+    }
+
+    private fun filterFolderAlbums(
+        artists: List<Pair<ArtistMediaStoreEntry, Artist>>,
+        albums: List<Pair<AlbumMediaStoreEntry, Album>>,
+        songs: List<Pair<SongMediaStoreEntry, Song>>
+    ): List<Pair<AlbumMediaStoreEntry, Album>> {
+        return albums.filter { album ->
+            songs.filter { song ->
+                song.first.albumId == album.first.id
+            }.none { song ->
+                val name = artists.find {
+                    it.first.id == song.first.artistId
+                }?.first?.name ?: return@none false
+                name.contains("unknown artist", true) || name.contains("<unknown>", true)
             }
         }
     }

@@ -37,7 +37,7 @@ fun PlayerBar(
     playerBarViewModel: PlayerBarViewModel = hiltViewModel()
 ) {
     val playerBarUiState by playerBarViewModel.state.collectAsStateWithLifecycle(initialValue = PlayerBarUiState())
-    if (playerBarUiState.mediaItem == null) return
+    if (!playerBarUiState.isPlaying && !playerBarUiState.isPaused) return
     Row(
         modifier = Modifier
             .clickable(onClick = onNavigateToPlayer)

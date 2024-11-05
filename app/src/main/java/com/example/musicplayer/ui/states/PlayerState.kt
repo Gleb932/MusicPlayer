@@ -8,5 +8,6 @@ data class PlayerState (
     val songList: List<Song> = listOf(),
     val mediaItems: List<MediaItem> = listOf(),
     val isPlaying: Boolean = false,
+    val isPaused: Boolean = false,
     val duration: Long = 0
 )

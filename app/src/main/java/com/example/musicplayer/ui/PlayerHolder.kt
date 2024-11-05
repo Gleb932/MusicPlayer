@@ -53,17 +53,17 @@ object PlayerHolder: Player.Listener {
             )
     }
 
-    fun syncState(reAddSongs: Boolean) {
+    fun syncState() {
         _playerState.update {
             PlayerState(
                 currentMediaItem = mediaController?.currentMediaItem,
                 songList = it.songList,
                 mediaItems = it.mediaItems,
                 isPlaying = mediaController?.isPlaying ?: false,
+                isPaused = mediaController?.isPlaying == false && ( mediaController?.let { it.currentPosition > 0 } == true ),
                 duration = mediaController?.duration ?: 0
             )
         }
-        if (reAddSongs) onCreate()
     }
 
     private fun mediaItemFromSong(song: Song): MediaItem? {
@@ -106,7 +106,10 @@ object PlayerHolder: Player.Listener {
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
         _playerState.update {
-            it.copy(isPlaying = isPlaying)
+            it.copy(
+                isPlaying = isPlaying,
+                isPaused = !isPlaying && ( mediaController?.let { it.currentPosition > 0 } == true )
+            )
         }
     }
 
@@ -136,7 +139,7 @@ object PlayerHolder: Player.Listener {
         }
     }
 
-    fun onCreate() {
+    fun resetMediaItems() {
         mediaController?.setMediaItems(playerState.value.mediaItems)
         mediaController?.prepare()
     }

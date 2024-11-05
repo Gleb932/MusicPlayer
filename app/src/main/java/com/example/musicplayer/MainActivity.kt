@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.example.musicplayer.data.LocalFilesScanner
@@ -38,8 +39,6 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var localFilesScanner: LocalFilesScanner
 
-    private var reAddSongs = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val requestPermissionLauncher =
@@ -67,7 +66,6 @@ class MainActivity : ComponentActivity() {
         }
         PlayerHolder.songRepository = songRepository
         PlayerHolder.artistRepository = artistRepository
-        reAddSongs = true
         setContent {
             MusicPlayerTheme {
                 NavigationRoot()
@@ -77,6 +75,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        initMediaController()
+    }
+
+    private fun initMediaController() {
         val sessionToken = SessionToken(this, ComponentName(this, PlayerService::class.java))
         controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         controllerFuture.addListener({
@@ -84,9 +86,12 @@ class MainActivity : ComponentActivity() {
             try {
                 PlayerHolder.mediaController = controllerFuture.get()
                 PlayerHolder.mediaController!!.addListener(PlayerHolder)
+                PlayerHolder.syncState()
                 //re add songs that are in the player holder, but were destroyed in the player service, unless it was playing during onDestroy
-                PlayerHolder.syncState(reAddSongs && PlayerHolder.mediaController!!.isPlaying == false)
-                reAddSongs = false
+                if(PlayerHolder.mediaController!!.mediaItemCount == 0
+                    || PlayerHolder.mediaController!!.playbackState == Player.STATE_ENDED) {
+                    PlayerHolder.resetMediaItems()
+                }
                 // The session accepted the connection.
             } catch (e: ExecutionException) {
                 Log.e("MediaController", "Failed to create")

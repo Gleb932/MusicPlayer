@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.musicplayer.data.LocalFilesScanner
+import com.example.musicplayer.domain.Maker
+import com.example.musicplayer.domain.MakerRole
 import com.example.musicplayer.domain.Song
 import com.example.musicplayer.domain.repositories.ArtistRepository
 import com.example.musicplayer.domain.repositories.SongRepository
@@ -56,9 +58,13 @@ class LocalSongsScreenViewModel @Inject constructor(
                     song.id,
                     song.title,
                     song.coverUri ?: song.sourceUri,
-                    song.makers.firstOrNull()?.let { artistRepository.getEntity(it.artistId)?.name },
+                    getFirstArtistName(song) { maker -> maker.role == MakerRole.SongArtist }
             ) }
         )
+    }
+
+    private fun getFirstArtistName(song: Song, predicate: (Maker) -> Boolean): String? {
+        return song.makers.firstOrNull(predicate)?.let { artistRepository.getEntity(it.artistId)?.name }
     }
 
     fun onScanSongs() {

@@ -1,5 +1,7 @@
 package com.example.musicplayer.domain
 
 enum class MakerRole {
-    Undefined
+    Undefined,
+    AlbumArtist,
+    SongArtist
 }
