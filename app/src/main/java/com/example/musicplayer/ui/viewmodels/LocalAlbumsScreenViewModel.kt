@@ -26,6 +26,7 @@ class LocalAlbumsScreenViewModel @Inject constructor(
     private val localFilesScanner: LocalFilesScanner
 ): ViewModel() {
     private val artistId = savedStateHandle.getStateFlow<String?>("artistId", null)
+    val searchFilter = savedStateHandle.getStateFlow<String?>("searchQuery", null)
     val albumListUiState: StateFlow<AlbumsUiState> = albumRepository.getLocalAlbums()
         .combine(artistId, {
                 albumList, artistId -> artistId?.let {
@@ -35,6 +36,16 @@ class LocalAlbumsScreenViewModel @Inject constructor(
                 }
             ?: albumList
         })
+        .combine(searchFilter) { albumList, searchFilter ->
+            if(searchFilter == null) albumList
+            else
+                albumList.filter { album ->
+                    album.title.contains(searchFilter, true) ||
+                    album.makers.any { maker ->
+                        artistRepository.getEntity(maker.artistId)?.name?.contains(searchFilter, true) == true
+                    }
+                }
+        }
         .map { mapState(it) }
         .stateIn(viewModelScope, SharingStarted.Lazily, AlbumsUiState())
 
