@@ -45,12 +45,19 @@ fun TopSearchBar(title: String, onSearch: (String) -> Unit)
                 SearchBarDefaults.InputField(
                     query = searchText,
                     onQueryChange = { searchText = it },
-                    onSearch = { query -> onSearch(query) },
+                    onSearch = { query ->
+                        onSearch(query)
+                        searchText = ""
+                        searchActive = false },
                     false,
                     {},
                     placeholder = { Text(text = "Search") },
                     leadingIcon = {
-                        IconButton(onClick = { onSearch(searchText) }) {
+                        IconButton(onClick = {
+                            onSearch(searchText)
+                            searchText = ""
+                            searchActive = false
+                        }) {
                             Icon(imageVector = Icons.Default.Search, contentDescription = null)
                         }
                     },
