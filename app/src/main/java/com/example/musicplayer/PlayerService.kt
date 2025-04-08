@@ -8,6 +8,7 @@ import androidx.media3.session.MediaSessionService
 
 class PlayerService: MediaSessionService() {
     private var mediaSession: MediaSession? = null
+    private var appIsClosed = false
 
     override fun onCreate() {
         super.onCreate()
@@ -25,6 +26,7 @@ class PlayerService: MediaSessionService() {
             // otherwise.
             stopSelf()
         }
+        appIsClosed = true
     }
 
     // Remember to release the player and media session in onDestroy
@@ -39,5 +41,18 @@ class PlayerService: MediaSessionService() {
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? {
         return mediaSession
+    }
+
+    override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
+        var foreground = startInForegroundRequired
+        val player = mediaSession?.player!!
+        if(appIsClosed && (player.playbackState == Player.STATE_IDLE ||
+                    player.playbackState == Player.STATE_ENDED ||
+                    player.mediaItemCount == 0 ||
+                    !player.playWhenReady)) {
+            foreground = false
+            stopForeground(STOP_FOREGROUND_DETACH)
+        }
+        super.onUpdateNotification(session, foreground)
     }
 }
