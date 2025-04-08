@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,20 +30,16 @@ import com.example.musicplayer.ui.screens.SongsScreen
 fun NavigationRoot() {
     val navController = rememberNavController()
     val navBack: () -> Unit = { navController.popBackStack() }
-    val navOptionsBuilder = { navOptionsBuilder: NavOptionsBuilder ->
-        navOptionsBuilder.popUpTo(navController.graph.findStartDestination().id) {
-            saveState = true
-        }
+    val tabNavOptionsBuilder = { navOptionsBuilder: NavOptionsBuilder ->
         navOptionsBuilder.launchSingleTop = true
-        navOptionsBuilder.restoreState = true
     }
     val musicTabRow = { selected: Int ->
         @Composable {
             MusicTabRow(
                 selected,
-                onNavigateToSongs = { navController.navigate(Songs(), builder = navOptionsBuilder) },
-                onNavigateToAlbums = { navController.navigate(Albums(), builder = navOptionsBuilder) },
-                onNavigateToArtists = { navController.navigate(Artists(), builder = navOptionsBuilder) }
+                onNavigateToSongs = { navController.navigate(Songs(), builder = tabNavOptionsBuilder) },
+                onNavigateToAlbums = { navController.navigate(Albums(), builder = tabNavOptionsBuilder) },
+                onNavigateToArtists = { navController.navigate(Artists(), builder = tabNavOptionsBuilder) }
             )
         }
     }
